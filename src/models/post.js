@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
 
-const Post = mongoose.model('Post', {
+const postScheme = new mongoose.Schema({
     name: {
         type: String,
         required: true,
@@ -25,5 +25,7 @@ const Post = mongoose.model('Post', {
         }
     }
 });
+
+const Post = mongoose.model('Post', postScheme);
 
 module.exports = Post;

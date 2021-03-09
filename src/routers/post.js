@@ -15,8 +15,18 @@ router.get('/posts/:id', async(req, res) => {
 });
 
 router.patch('/posts/:id', async(req, res) => {
+    const updates = Object.keys(req.body);
+    const allowedUpdates = ['name', 'content', 'author', 'date'];
+    const isValidOperation = updates.every((update) => allowedUpdates.includes(update));
+
+    if (!isValidOperation) {
+        return res.status(400).send({ error: 'Invalid updates' });
+    }
+
     try {
-        const post = await Post.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
+        const post = await Post.findById(req.params.id);
+        updates.forEach((update) => post[update] = req.body[update]);
+        await post.save();
         if (!post) {
             return res.status(404).send();
         }
